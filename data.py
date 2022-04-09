@@ -46,6 +46,8 @@ MAX_YEAR = int(df["year"].dropna().max())
 
 edgelist = make_edgelist(df)
 
+tags_list = make_tags_df(make_edgelist(df), metatags=[], mlb=mlb).columns.tolist()
+
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 application = app.server
@@ -58,34 +60,34 @@ app.layout = dbc.Container(
                     [
                         dcc.Store(id="max-store", data=122),
                         html.P("Controls"),
-                        dbc.Select(
-                            id="christmas-dropdown",
-                            options=[
-                                {"label": "All songs", "value": "all"},
-                                {"label": "Christmas songs only", "value": "christmas"},
-                                {
-                                    "label": "No Christmas songs",
-                                    "value": "no_christmas",
-                                },
-                                {
-                                    "label": "Nintendo",
-                                    "value": "nintendo",
-                                },
-                                {
-                                    "label": "No Nintendo",
-                                    "value": "no_nintendo",
-                                },
-                                {
-                                    "label": "80s",
-                                    "value": "80s",
-                                },
-                                {
-                                    "label": "3/4 time",
-                                    "value": "3",
-                                },
-                            ],
-                            value="all",
-                        ),
+                        # dbc.Select(
+                        #     id="christmas-dropdown",
+                        #     options=[
+                        #         {"label": "All songs", "value": "all"},
+                        #         {"label": "Christmas songs only", "value": "christmas"},
+                        #         {
+                        #             "label": "No Christmas songs",
+                        #             "value": "no_christmas",
+                        #         },
+                        #         {
+                        #             "label": "Nintendo",
+                        #             "value": "nintendo",
+                        #         },
+                        #         {
+                        #             "label": "No Nintendo",
+                        #             "value": "no_nintendo",
+                        #         },
+                        #         {
+                        #             "label": "80s",
+                        #             "value": "80s",
+                        #         },
+                        #         {
+                        #             "label": "3/4 time",
+                        #             "value": "3",
+                        #         },
+                        #     ],
+                        #     value="all",
+                        # ),
                         dcc.Dropdown(
                             id="platform-dropdown",
                             options=[{"label": p, "value": p} for p in platform_list],
@@ -105,7 +107,7 @@ app.layout = dbc.Container(
                             placeholder="Select franchise",
                         ),
                         html.Br(),
-                        html.P("Game years:"),
+                        html.P("Game years"),
                         dcc.RangeSlider(
                             min=MIN_YEAR,
                             max=MAX_YEAR,
@@ -121,6 +123,8 @@ app.layout = dbc.Container(
                             label="Edge Color",
                             value={"hex": "#421f89"},
                         ),
+                        html.Br(),
+                        html.P("Metatags to use"),
                         dcc.Dropdown(
                             options=[
                                 {"label": c, "value": c}
@@ -153,7 +157,26 @@ app.layout = dbc.Container(
                             id="metatags-dropdown",
                         ),
                         html.Br(),
-                        html.P("Distance multiplier:"),
+                        html.P("Required tags"),
+                        dcc.Dropdown(
+                            id="required-tags",
+                            options=[{"label": t, "value": t} for t in tags_list],
+                            multi=True,
+                        ),
+                        dbc.Checkbox(
+                            id="remove-required-tags-checkbox",
+                            label="Remove required tags from graph",
+                            value=True,
+                        ),
+                        html.Br(),
+                        html.P("Tags to exclude"),
+                        dcc.Dropdown(
+                            id="excluded-tags",
+                            options=[{"label": t, "value": t} for t in tags_list],
+                            multi=True,
+                        ),
+                        html.Br(),
+                        html.P("Distance multiplier"),
                         dcc.Slider(
                             min=10,
                             max=210,
@@ -167,7 +190,7 @@ app.layout = dbc.Container(
                             tooltip={"placement": "bottom", "always_visible": True},
                         ),
                         html.Br(),
-                        html.P("t-SNE Perplexity:"),
+                        html.P("t-SNE Perplexity"),
                         dcc.Slider(
                             min=5,
                             max=105,
@@ -242,8 +265,6 @@ app.layout = dbc.Container(
     Input("edge-color", "value"),
 )
 def color_children(edgeData, max_store, highlight_edges, edge_color):
-    # if max_store is None:
-    # max_store = 122
 
     stylesheet = [
         {
@@ -265,8 +286,8 @@ def color_children(edgeData, max_store, highlight_edges, edge_color):
                 "background-color": edge_color.get("hex", "#421f89"),
                 "width": f"mapData(weight, 0, {max_store}, 1, 50)",
                 "height": f"mapData(weight, 0, {max_store}, 1, 50)",
-                "line-opacity": f"mapData(weight, 0, {max_store}, .1, .25)",
-                "opacity": f"mapData(weight, 0, {max_store}, .1, .25)",
+                "line-opacity": f"mapData(weight, 0, {max_store}, .1, .5)",
+                "opacity": f"mapData(weight, 0, {max_store}, .1, .5)",
                 "curve-style": "bezier",
             },
         },
@@ -311,10 +332,23 @@ def color_children(edgeData, max_store, highlight_edges, edge_color):
         Input("zoom-slider", "value"),
         Input("perplexity-slider", "value"),
         Input("metatags-dropdown", "value"),
+        Input("required-tags", "value"),
+        Input("remove-required-tags-checkbox", "value"),
+        Input("excluded-tags", "value"),
     ],
 )
 def make_graph_data(
-    platform, company, franchise, year, zoom, perplexity, metatags, df=df
+    platform,
+    company,
+    franchise,
+    year,
+    zoom,
+    perplexity,
+    metatags,
+    required_tags,
+    remove_required_tags,
+    excluded_tags,
+    df=df,
 ):
 
     tsne = TSNE(
@@ -330,6 +364,20 @@ def make_graph_data(
     tags = make_edgelist(df)
 
     tags = make_tags_df(tags, metatags, mlb)
+
+    if required_tags is not None and required_tags:
+        for tag in required_tags:
+            tags = tags[tags[tag] == 1]
+        if remove_required_tags:
+            tags = tags.drop(columns=required_tags)
+
+    if excluded_tags is not None and excluded_tags:
+        for tag in excluded_tags:
+            tags = tags[tags[tag] == 0]
+
+    print(tags)
+
+    print(tags.sum(axis=0).sort_values())
 
     coocc = tags.T.dot(tags)
 
