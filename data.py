@@ -11,6 +11,7 @@ import dash
 from dash import html, Output, Input, dcc
 import dash_cytoscape as cyto
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 
 import plotly.express as px
 import plotly.graph_objects as go
@@ -42,52 +43,6 @@ franchise_list = sorted(df["franchise"].dropna().unique(), key=str.casefold)
 MIN_YEAR = int(df["year"].dropna().min())
 MAX_YEAR = int(df["year"].dropna().max())
 
-
-# stylesheet = [
-#     {
-#         "selector": "node",
-#         "style": {
-#             "width": f"mapData(size, 0, {coocc.max().max()}, 10, 200)",
-#             "height": f"mapData(size, 0, {coocc.max().max()}, 10, 200)",
-#             "content": "data(label)",
-#             "font-size": "75px",
-#         },
-#     },
-#     {
-#         "selector": "edge",
-#         "style": {
-#             "width": f"mapData(weight, 0, {coocc.max().max()}, 1, 50)",
-#             "height": f"mapData(weight, 0, {coocc.max().max()}, 1, 50)",
-#             "line-opacity": f"mapData(weight, 0, {coocc.max().max()}, .1, .8)",
-#             "opacity": f"mapData(weight, 0, {coocc.max().max()}, .1, .8)",
-#             "curve-style": "bezier",
-#         },
-#     },
-# ]
-
-# max_store = 122
-
-# stylesheet = [
-#     {
-#         "selector": "node",
-#         "style": {
-#             "width": f"mapData(size, 0, {max_store}, 10, 200)",
-#             "height": f"mapData(size, 0, {max_store}, 10, 200)",
-#             "content": "data(label)",
-#             "font-size": "75px",
-#         },
-#     },
-#     {
-#         "selector": "edge",
-#         "style": {
-#             "width": f"mapData(weight, 0, {max_store}, 1, 50)",
-#             "height": f"mapData(weight, 0, {max_store}, 1, 50)",
-#             "line-opacity": f"mapData(weight, 0, {max_store}, .1, .8)",
-#             "opacity": f"mapData(weight, 0, {max_store}, .1, .8)",
-#             "curve-style": "bezier",
-#         },
-#     },
-# ]
 
 edgelist = make_edgelist(df)
 
@@ -141,7 +96,7 @@ app.layout = dbc.Container(
                             id="company-dropdown",
                             options=[{"label": p, "value": p} for p in company_list],
                             multi=True,
-                            placeholder="Select company",
+                            placeholder="Select publisher",
                         ),
                         dcc.Dropdown(
                             id="franchise-dropdown",
@@ -149,14 +104,23 @@ app.layout = dbc.Container(
                             multi=True,
                             placeholder="Select franchise",
                         ),
+                        html.Br(),
+                        html.P("Game years:"),
                         dcc.RangeSlider(
                             min=MIN_YEAR,
                             max=MAX_YEAR,
                             step=1,
                             value=[MIN_YEAR, MAX_YEAR],
                             id="year-slider",
+                            marks={i: str(i) for i in [1990, 2000, 2010, 2020]},
+                            tooltip={"placement": "top"},
                         ),
                         html.Br(),
+                        daq.ColorPicker(
+                            id="edge-color",
+                            label="Edge Color",
+                            value={"hex": "#421f89"},
+                        ),
                         dcc.Dropdown(
                             options=[
                                 {"label": c, "value": c}
@@ -275,9 +239,9 @@ app.layout = dbc.Container(
     Input("network-graph", "mouseoverNodeData"),
     Input("max-store", "data"),
     Input("highlight-edges", "value"),
-    Input("christmas-dropdown", "value"),
+    Input("edge-color", "value"),
 )
-def color_children(edgeData, max_store, highlight_edges, christmas_dropdown):
+def color_children(edgeData, max_store, highlight_edges, edge_color):
     # if max_store is None:
     # max_store = 122
 
@@ -297,12 +261,8 @@ def color_children(edgeData, max_store, highlight_edges, christmas_dropdown):
         {
             "selector": "edge",
             "style": {
-                "line-color": "#421f89"
-                if christmas_dropdown != "christmas"
-                else "#194d19",
-                "background-color": "#421f89"
-                if christmas_dropdown != "christmas"
-                else "#194d19",
+                "line-color": edge_color.get("hex", "#421f89"),
+                "background-color": edge_color.get("hex", "#421f89"),
                 "width": f"mapData(weight, 0, {max_store}, 1, 50)",
                 "height": f"mapData(weight, 0, {max_store}, 1, 50)",
                 "line-opacity": f"mapData(weight, 0, {max_store}, .1, .25)",
