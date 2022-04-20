@@ -1,20 +1,31 @@
-# Tags in graph
-
-## No metatag
-
 - 12
 - 2
 - 3
 - 4
 - 6
 - 80s
-- accordion
+- accordion`
 - arpeggiated
+- auxiliary_percussion
+	- shaker
+	- other_auxiliary_percussion
+- bass
+  - acoustic_bass
+  - electric_bass
+  - synth_bass
+- brass
+  - horn
+  - trumpet
+  - other_brass
 - breakbeat
 - chiptune
 - Christmas
 - chromatic_mediants
 - detuned
+- drums
+	- hand_drums
+	- snare
+	- other_drums
 - drumset
 - EDM
 - electric_guitar
@@ -27,6 +38,18 @@
 - low_reverb
 - majorish
 - marimba
+- metallic_percussion
+	- celesta
+	- chimes
+	- crotales
+	- cymbals
+	- glockenspiel
+	- sleigh_bells
+	- tambourine
+	- triangle
+	- vibraphone
+	- wind_chimes
+	- other_metallic_percussion
 - military
 - minor_iv
 - minorish
@@ -36,79 +59,28 @@
 - orchestra
 - organ
 - piano
+- plucked_strings
+	- acoustic_guitar
+	- harp
+	- pizz_strings
+	- other_plucked_strings
 - rock
 - shuffle
 - strings
 - sweeps
+- synth
+	- synth_lead
+	- other_synth
 - train
 - violin
+- vocals
+	- treble_vocals
+	- other_vocals
+- woodwinds
+	- clarinet
+	- flute
+	- oboe
+	- pan_flute
+	- other_woodwinds
 - wind_effect
 - xylophone
-
-
-## auxiliary_percussion
-
-- other_auxiliary_percussion
-- shaker
-
-## bass
-
-- acoustic_bass
-- electric_bass
-- synth_bass
-
-## brass
-
-- horn
-- other_brass
-- trumpet
-
-## drums
-
-- hand_drums
-- other_drums
-- snare
-
-
-## metallic_percussion
-
-- celesta
-- chimes
-- crotales
-- cymbals
-- glockenspiel
-- other_metallic_percussion
-- sleigh_bells
-- tambourine
-- triangle
-- vibraphone
-- wind_chimes
-
-
-## plucked_strings
-
-- acoustic_guitar
-- harp
-- other_plucked_strings
-- pizz_strings
-
-
-## synth
-
-- other_synth
-- synth_lead
-
-
-## vocals
-
-- other_vocals
-- treble_vocals
-
-
-## woodwinds
-
-- clarinet
-- flute
-- oboe
-- other_woodwinds
-- pan_flute
