@@ -4,8 +4,8 @@ from sklearn.preprocessing import MultiLabelBinarizer
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 import itertools
-import networkx as nx
-from netwulf import visualize
+# import networkx as nx
+# from netwulf import visualize
 
 import dash
 from dash import html, Output, Input, dcc
@@ -13,8 +13,8 @@ import dash_cytoscape as cyto
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 
-import plotly.express as px
-import plotly.graph_objects as go
+# import plotly.express as px
+# import plotly.graph_objects as go
 
 from utils import make_edgelist, make_tags_df, filter_data, import_data
 
