@@ -4,7 +4,7 @@
 - 4
 - 6
 - 80s
-- accordion`
+- accordion
 - arpeggiated
 - auxiliary_percussion
 	- shaker
