@@ -25,9 +25,9 @@ cyto.load_extra_layouts()
 #     n_components=2, perplexity=5, learning_rate="auto", random_state=0, init="pca"
 # )
 
-# df = pd.read_csv("data_220308.csv")
+# df = pd.read_csv("winter-data_220308.csv")
 
-df = import_data("data_220308.csv")
+df = import_data("winter-data_220308.csv")
 
 # Define values for dropdowns
 
