@@ -114,7 +114,8 @@ def make_tags_df(tags, metatags, mlb, threshold=2, export_other=False):
         lambda x: ":".join(x.split(":")[::-1]) if ":" in x else x
     )
 
-    to_export["value"].value_counts().to_csv("counts_with_metatags.csv")
+    pd.DataFrame(to_export["value"].unique()).to_csv("unique_tags.csv")
+    # to_export["value"].value_counts().to_csv("counts_with_metatags.csv")
 
     tags["value"] = tags["value"].apply(
         lambda x: x.split(":")[
