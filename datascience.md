@@ -27,3 +27,16 @@ List of things to cite
 - [Dash](https://dash.plotly.com/)
 - [Dash Cytoscape](https://dash.plotly.com/cytoscape)
 - [Pandas](https://pandas.pydata.org/docs/index.html)
+
+
+PageRank
+
+PageRank is an algorithm for measuring the relative importance of nodes in a network, made famous as the algorithm Google used to rank search results. From the viewpoint of a person randomly visiting websites by clicking on links, the score given to each node can be thought of as the probability of visiting that specific node. While this metaphor doesn't directly translate to our network of tags, using PageRank to calculate each tag's relative importance applies to any network of nodes and edges.
+
+PageRank was designed for directed networks--meaning a links between nodes only go in one direction. Drawing on websites again, a blog linking to a New York Times article doesn't automatically make the Times link to the blog. The dataset used for this analysis is undirected; however, [NetworkX](https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.link_analysis.pagerank_alg.pagerank.html), the library used to calculate PageRank scores, converts undirected networks to directed networks by replacing each undirected edge with two directed edges, one going in each direction.
+
+[Original PageRank paper](http://ilpubs.stanford.edu:8090/422/)
+
+
+Conclusion
+
