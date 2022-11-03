@@ -1,7 +1,8 @@
 from collections import Counter
-import pandas as pd
-import numpy as np
 from typing import Optional
+
+import numpy as np
+import pandas as pd
 
 
 def import_data(filename):
@@ -24,9 +25,6 @@ def make_edgelist(df, id_cols=None):
             "company",
             "game_and_track",
         ]
-        # id_cols = ["game", "track_title"]
-
-    # df["year"] = df["year"] // 10 * 10
 
     tag_columns = [col for col in df.columns if col not in id_cols + ["number_of_tags"]]
 
@@ -43,25 +41,9 @@ def make_edgelist(df, id_cols=None):
         .astype({"value": str})
     )
 
-    # c = Counter(tags["value"].tolist())
-
-    # counts = pd.DataFrame(c.items())
-
-    # counts = tags["value"].value_counts(sort=True)
-
-    # tags["value"] = tags["value"].astype(str)
-
-    # counts.to_csv("counts.csv")
-
-    # tags = tags[tags["value"].isin(counts[counts > 1].index)]
-
     tags = tags[tags["value"] != "--"]
 
     tags = tags[["game_and_track", "value"]]
-
-    # tags.columns = ["source", "target"]
-
-    # return tags.reset_index(drop=True)
 
     return tags
 
@@ -104,19 +86,6 @@ def make_tags_df(tags, metatags, mlb, threshold=2, export_other=False):
         axis=1,
     )
 
-    # tags = tags[
-    #     ~tags["tag"].isin([col for l in other["to_drop"].tolist() for col in l])
-    # ]
-
-    to_export = tags[["value"]].copy()
-
-    to_export["value"] = to_export["value"].apply(
-        lambda x: ":".join(x.split(":")[::-1]) if ":" in x else x
-    )
-
-    pd.DataFrame(to_export["value"].unique()).to_csv("unique_tags.csv")
-    # to_export["value"].value_counts().to_csv("counts_with_metatags.csv")
-
     tags["value"] = tags["value"].apply(
         lambda x: x.split(":")[
             1 if x.split(":")[1] in metatags + ["majorish", "minorish"] else 0
@@ -124,7 +93,6 @@ def make_tags_df(tags, metatags, mlb, threshold=2, export_other=False):
         if ":" in x
         else x
     )
-    # tags = tags.explode("value", ignore_index=True)
 
     tag_counts = tags["value"].value_counts()
 
