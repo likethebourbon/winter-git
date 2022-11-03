@@ -1,22 +1,25 @@
-import pandas as pd
+import itertools
+
+import dash
+import dash_bootstrap_components as dbc
+import dash_cytoscape as cyto
+import dash_daq as daq
 import numpy as np
-from sklearn.preprocessing import MultiLabelBinarizer
+import pandas as pd
+from dash import Input, Output, dcc, html
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
-import itertools
+from sklearn.preprocessing import MultiLabelBinarizer
+
+from utils import filter_data, import_data, make_edgelist, make_tags_df
+
 # import networkx as nx
 # from netwulf import visualize
 
-import dash
-from dash import html, Output, Input, dcc
-import dash_cytoscape as cyto
-import dash_bootstrap_components as dbc
-import dash_daq as daq
 
 # import plotly.express as px
 # import plotly.graph_objects as go
 
-from utils import make_edgelist, make_tags_df, filter_data, import_data
 
 mlb = MultiLabelBinarizer()
 pca = PCA(n_components=2)
