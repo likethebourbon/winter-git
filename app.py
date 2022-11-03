@@ -1,4 +1,5 @@
 import itertools
+from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
@@ -17,7 +18,11 @@ mlb = MultiLabelBinarizer()
 pca = PCA(n_components=2)
 cyto.load_extra_layouts()
 
-df = import_data("winter-data_220308.csv")
+cwd = Path(__file__).parent
+
+RAW_DATA_FILE = cwd / "data" / "raw" / "winter-data_220308.csv"
+
+df = import_data(RAW_DATA_FILE)
 
 # Define values for dropdowns
 
