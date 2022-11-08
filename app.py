@@ -8,20 +8,17 @@ import dash_daq as daq
 import numpy as np
 import pandas as pd
 from dash import Input, Output, dcc, html
-from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from sklearn.preprocessing import MultiLabelBinarizer
 
 from utils import filter_data, import_data, make_edgelist, make_tags_df
 
 mlb = MultiLabelBinarizer()
-pca = PCA(n_components=2)
-cyto.load_extra_layouts()
 
 cwd = Path(__file__).parent
 
 RAW_DATA_FILE = cwd / "data" / "raw" / "winter-data_220308.csv"
-
+DEFAULT_PURPLE = "#421f89"
 df = import_data(RAW_DATA_FILE)
 
 # Define values for dropdowns
@@ -99,7 +96,7 @@ app.layout = dbc.Container(
                         daq.ColorPicker(
                             id="edge-color",
                             label="Edge Color",
-                            value={"hex": "#421f89"},
+                            value={"hex": DEFAULT_PURPLE},
                         ),
                         html.Br(),
                         html.P("Metatags to use"),
@@ -172,11 +169,16 @@ app.layout = dbc.Container(
                 ),
                 dbc.Col(
                     [
+                        dbc.Alert(
+                            "Only one track matches the current filters. Expand filter parameters to view the network of tags.",
+                            id="network-alert",
+                            is_open=False,
+                        ),
                         cyto.Cytoscape(
                             id="network-graph",
                             layout={"name": "preset"},
                             style={"width": "100%", "height": "800px"},
-                        )
+                        ),
                     ],
                 ),
             ]
@@ -210,8 +212,8 @@ def color_children(edgeData, max_store, highlight_edges, edge_color):
         {
             "selector": "edge",
             "style": {
-                "line-color": edge_color.get("hex", "#421f89"),
-                "background-color": edge_color.get("hex", "#421f89"),
+                "line-color": edge_color.get("hex", DEFAULT_PURPLE),
+                "background-color": edge_color.get("hex", DEFAULT_PURPLE),
                 "width": f"mapData(weight, 0, {max_store}, 1, 50)",
                 "height": f"mapData(weight, 0, {max_store}, 1, 50)",
                 "line-opacity": f"mapData(weight, 0, {max_store}, .1, .5)",
@@ -239,6 +241,7 @@ def color_children(edgeData, max_store, highlight_edges, edge_color):
 @app.callback(
     [
         Output("network-graph", "elements"),
+        Output("network-alert", "is_open"),
         Output("max-store", "data"),
     ],
     [
@@ -277,6 +280,9 @@ def make_graph_data(
     )
 
     df = filter_data(df, platform, company, franchise, year)
+
+    if len(df) < 2:
+        return {}, True, 0
 
     tags = make_edgelist(df)
 
@@ -354,6 +360,7 @@ def make_graph_data(
 
     return (
         nodes + edges,
+        False,
         coocc.max().max(),
     )
 
