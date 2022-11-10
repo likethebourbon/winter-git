@@ -14,3 +14,6 @@ This Dash app to help us explore and analyze the data we collected, using Dash C
 
 Controls to filter the dataset are available under Data Controls, including selecting tracks by publisher, platform, franchise, and year. Controls to adjust hyperparameters for t-SNE and the network graph are available under Hyperparameter Controls.
 
+## Using the web app
+
+The web app is not yet available on a public website. Until it is, you can explore the dataset by running it locally. View the [installation instructions](/instructions.md) to get started.
