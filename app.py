@@ -58,114 +58,164 @@ application = app.server
 app.layout = dbc.Container(
     [
         dbc.Row(
+            dbc.Col(
+                html.H1("Network of Tags in Winter Video Game Music"),
+                width="auto",
+            ),
+            justify="center",
+        ),
+        dbc.Row(
             [
                 dbc.Col(
                     [
                         dcc.Store(id="max-store", data=122),
-                        html.P("Controls"),
-                        dcc.Dropdown(
-                            id="platform-dropdown",
-                            options=[{"label": p, "value": p} for p in platform_list],
-                            multi=True,
-                            placeholder="Select platform",
-                        ),
-                        dcc.Dropdown(
-                            id="company-dropdown",
-                            options=[{"label": p, "value": p} for p in company_list],
-                            multi=True,
-                            placeholder="Select publisher",
-                        ),
-                        dcc.Dropdown(
-                            id="franchise-dropdown",
-                            options=[{"label": p, "value": p} for p in franchise_list],
-                            multi=True,
-                            placeholder="Select franchise",
-                        ),
-                        html.Br(),
-                        html.P("Game years"),
-                        dcc.RangeSlider(
-                            min=MIN_YEAR,
-                            max=MAX_YEAR,
-                            step=1,
-                            value=[MIN_YEAR, MAX_YEAR],
-                            id="year-slider",
-                            marks={i: str(i) for i in [1990, 2000, 2010, 2020]},
-                            tooltip={"placement": "top"},
-                        ),
-                        html.Br(),
-                        daq.ColorPicker(
-                            id="edge-color",
-                            label="Edge Color",
-                            value={"hex": DEFAULT_PURPLE},
-                        ),
-                        html.Br(),
-                        html.P("Metatags to use"),
-                        dcc.Dropdown(
-                            options=[
-                                {"label": c, "value": c}
-                                for c in metatags
-                                if c not in ["majorish", "minorish"]
+                        dbc.Accordion(
+                            [
+                                dbc.AccordionItem(
+                                    [
+                                        dcc.Dropdown(
+                                            id="platform-dropdown",
+                                            options=[
+                                                {"label": p, "value": p}
+                                                for p in platform_list
+                                            ],
+                                            multi=True,
+                                            placeholder="Select platform",
+                                        ),
+                                        dcc.Dropdown(
+                                            id="company-dropdown",
+                                            options=[
+                                                {"label": p, "value": p}
+                                                for p in company_list
+                                            ],
+                                            multi=True,
+                                            placeholder="Select publisher",
+                                        ),
+                                        dcc.Dropdown(
+                                            id="franchise-dropdown",
+                                            options=[
+                                                {"label": p, "value": p}
+                                                for p in franchise_list
+                                            ],
+                                            multi=True,
+                                            placeholder="Select franchise",
+                                        ),
+                                        html.Br(),
+                                        html.P("Game years"),
+                                        dcc.RangeSlider(
+                                            min=MIN_YEAR,
+                                            max=MAX_YEAR,
+                                            step=1,
+                                            value=[MIN_YEAR, MAX_YEAR],
+                                            id="year-slider",
+                                            marks={
+                                                i: str(i)
+                                                for i in [1990, 2000, 2010, 2020]
+                                            },
+                                            tooltip={"placement": "top"},
+                                        ),
+                                        html.Br(),
+                                        daq.ColorPicker(
+                                            id="edge-color",
+                                            label="Edge Color",
+                                            value={"hex": DEFAULT_PURPLE},
+                                        ),
+                                        html.Br(),
+                                        html.P("Metatags to use"),
+                                        dcc.Dropdown(
+                                            options=[
+                                                {"label": c, "value": c}
+                                                for c in metatags
+                                                if c not in ["majorish", "minorish"]
+                                            ],
+                                            value=[
+                                                c
+                                                for c in metatags
+                                                if c not in ["majorish", "minorish"]
+                                            ],
+                                            multi=True,
+                                            id="metatags-dropdown",
+                                        ),
+                                        html.Br(),
+                                        html.P("Required tags"),
+                                        dcc.Dropdown(
+                                            id="required-tags",
+                                            options=[
+                                                {"label": t, "value": t}
+                                                for t in tags_list
+                                            ],
+                                            multi=True,
+                                        ),
+                                        dbc.Checkbox(
+                                            id="remove-required-tags-checkbox",
+                                            label="Remove required tags from graph",
+                                            value=True,
+                                        ),
+                                        html.Br(),
+                                        html.P("Tags to exclude"),
+                                        dcc.Dropdown(
+                                            id="excluded-tags",
+                                            options=[
+                                                {"label": t, "value": t}
+                                                for t in tags_list
+                                            ],
+                                            multi=True,
+                                        ),
+                                    ],
+                                    title="Data Controls",
+                                ),
+                                dbc.AccordionItem(
+                                    [
+                                        html.P("Distance multiplier"),
+                                        dcc.Slider(
+                                            min=10,
+                                            max=210,
+                                            step=1,
+                                            value=50,
+                                            marks={
+                                                i: {"label": str(i)}
+                                                for i in [10, 50, 90, 130, 170, 210]
+                                            },
+                                            id="zoom-slider",
+                                            tooltip={
+                                                "placement": "bottom",
+                                                "always_visible": True,
+                                            },
+                                        ),
+                                        html.Br(),
+                                        html.P("t-SNE Perplexity"),
+                                        dcc.Slider(
+                                            min=5,
+                                            max=105,
+                                            step=1,
+                                            value=5,
+                                            marks={
+                                                i: {"label": str(i)}
+                                                for i in [5, 25, 45, 65, 85, 105]
+                                            },
+                                            id="perplexity-slider",
+                                            tooltip={
+                                                "placement": "bottom",
+                                                "always_visible": True,
+                                            },
+                                        ),
+                                    ],
+                                    title="t-SNE Controls",
+                                ),
                             ],
-                            value=[
-                                c for c in metatags if c not in ["majorish", "minorish"]
-                            ],
-                            multi=True,
-                            id="metatags-dropdown",
-                        ),
-                        html.Br(),
-                        html.P("Required tags"),
-                        dcc.Dropdown(
-                            id="required-tags",
-                            options=[{"label": t, "value": t} for t in tags_list],
-                            multi=True,
-                        ),
-                        dbc.Checkbox(
-                            id="remove-required-tags-checkbox",
-                            label="Remove required tags from graph",
-                            value=True,
-                        ),
-                        html.Br(),
-                        html.P("Tags to exclude"),
-                        dcc.Dropdown(
-                            id="excluded-tags",
-                            options=[{"label": t, "value": t} for t in tags_list],
-                            multi=True,
-                        ),
-                        html.Br(),
-                        html.P("Distance multiplier"),
-                        dcc.Slider(
-                            min=10,
-                            max=210,
-                            step=1,
-                            value=50,
-                            marks={
-                                i: {"label": str(i)}
-                                for i in [10, 50, 90, 130, 170, 210]
-                            },
-                            id="zoom-slider",
-                            tooltip={"placement": "bottom", "always_visible": True},
-                        ),
-                        html.Br(),
-                        html.P("t-SNE Perplexity"),
-                        dcc.Slider(
-                            min=5,
-                            max=105,
-                            step=1,
-                            value=5,
-                            marks={
-                                i: {"label": str(i)} for i in [5, 25, 45, 65, 85, 105]
-                            },
-                            id="perplexity-slider",
-                            tooltip={"placement": "bottom", "always_visible": True},
+                            # flush=True,
+                            always_open=True,
                         ),
                         html.Br(),
                         dbc.Checkbox(
-                            id="highlight-edges", label="Highlight edges", value=False
+                            id="highlight-edges",
+                            label="Highlight edges on mouseover",
+                            value=False,
                         ),
                         html.Br(),
                         dbc.Button("Export image", id="export-button"),
                     ],
-                    width=2,
+                    width=3,
                 ),
                 dbc.Col(
                     [
@@ -173,6 +223,7 @@ app.layout = dbc.Container(
                             "Only one track matches the current filters. Expand filter parameters to view the network of tags.",
                             id="network-alert",
                             is_open=False,
+                            color="warning",
                         ),
                         cyto.Cytoscape(
                             id="network-graph",
@@ -183,7 +234,8 @@ app.layout = dbc.Container(
                 ),
             ]
         ),
-    ]
+    ],
+    fluid=True,
 )
 
 
