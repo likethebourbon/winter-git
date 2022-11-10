@@ -200,7 +200,7 @@ app.layout = dbc.Container(
                                             },
                                         ),
                                     ],
-                                    title="t-SNE Controls",
+                                    title="Hyperparameter Controls",
                                 ),
                             ],
                             # flush=True,
@@ -427,4 +427,4 @@ def export_image(n_clicks):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=False)
