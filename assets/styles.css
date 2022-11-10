@@ -1,4 +1,8 @@
 div.chrome-picker.daq-colorpicker--light__chromepicker {
     border-radius: 0% !important;
-    border: 0px solid rgb(255,255,255) !important;
+    border: 0px solid rgb(255, 255, 255) !important;
+}
+
+h1 {
+    font-family: 'Open Sans', sans-serif;
 }
