@@ -52,7 +52,12 @@ metatags = sorted(
     )
 )
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(
+    __name__,
+    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    title="Winter",
+    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
+)
 
 application = app.server
 
@@ -116,12 +121,6 @@ app.layout = dbc.Container(
                                             tooltip={"placement": "top"},
                                         ),
                                         html.Br(),
-                                        daq.ColorPicker(
-                                            id="edge-color",
-                                            label="Edge Color",
-                                            value={"hex": DEFAULT_PURPLE},
-                                        ),
-                                        html.Br(),
                                         html.P("Metatags to use"),
                                         dcc.Dropdown(
                                             options=[
@@ -161,6 +160,12 @@ app.layout = dbc.Container(
                                                 for t in tags_list
                                             ],
                                             multi=True,
+                                        ),
+                                        html.Br(),
+                                        daq.ColorPicker(
+                                            id="edge-color",
+                                            label="Edge Color",
+                                            value={"hex": DEFAULT_PURPLE},
                                         ),
                                     ],
                                     title="Data Controls",
@@ -216,7 +221,7 @@ app.layout = dbc.Container(
                         html.Br(),
                         dbc.Button("Export image", id="export-button"),
                     ],
-                    width=3,
+                    lg=3,
                 ),
                 dbc.Col(
                     [
@@ -229,9 +234,16 @@ app.layout = dbc.Container(
                         cyto.Cytoscape(
                             id="network-graph",
                             layout={"name": "preset"},
-                            style={"width": "100%", "height": "800px"},
+                            style={
+                                "width": "100%",
+                                "height": "800px",
+                                "border": ".5px solid #a7a7a7",
+                                "position": "sticky",
+                                "top": "0px",
+                            },
                         ),
                     ],
+                    lg=9,
                 ),
             ]
         ),
