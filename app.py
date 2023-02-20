@@ -1,4 +1,5 @@
 import itertools
+import os
 from pathlib import Path
 
 import dash
@@ -427,4 +428,4 @@ def export_image(n_clicks):
 
 
 if __name__ == "__main__":
-    app.run_server(debug=False)
+    app.run_server(debug=False, port=int(os.environ.get("PORT", 8080)))
