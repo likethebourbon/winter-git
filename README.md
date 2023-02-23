@@ -16,4 +16,4 @@ Controls to filter the dataset are available under Data Controls, including sele
 
 ## Using the web app
 
-The web app is not yet available on a public website. Until it is, you can explore the dataset by running it locally. View the [installation instructions](/instructions.md) to get started.
+The app is available at [https://winter.evanwilliams.dev](https://winter.evanwilliams.dev).
